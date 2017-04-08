@@ -1,29 +1,54 @@
-ESC  equ  1bh                               ; ASCII kod za Esc taster
-ENT  equ  0dh                               ; ASCII kod za Esc taster
+ESC equ 1bh                                 ; ASCII kod za Esc taster
+ENT equ 0dh                                 ; ASCII kod za Ent taster
+SEP equ 25h                                 ; ASCII kod za $ (terminator)
+SPA equ 20h                                 ; ASCII kod za Spa tqaster
 
 org 100h
 
 segment .code
+main:
+  call cls
 
-main:   cld
-        mov     cx, 0080h                   ; Maksimalni broj izvrsavanja instrukcije sa prefiksom REPx
-        mov     di, 81h                     ; Pocetak komandne linije u PSP.
-        mov     al, ' '                     ; String uvek pocinje praznim mestom (razmak izmedju komande i parametra) 
-repe    scasb                               ; Trazimo prvo mesto koje nije prazno (tada DI pokazuje na lokaciju iza njega)
-        dec     di                          ; Vracamo DI da pokazuje gde treba
-        mov     si, di                      ; Pocetak stringa u SI
-        mov     al, 0dh                     ; Trazimo kraj stringa (pritisnut Enter)
-repne   scasb                               ; (tada DI pokazuje na lokaciju iza njega) 
-        mov byte [di-1], 0                  ; string zavrsavamo nulom
+  call get_args     
 
-        mov     si, sati
-        call    _print
+  mov si, command
+  mov di, komanda_start
+  call compare_strings
+  cmp ax, 1
+  je .start_timer
 
-%include "ekran.asm"
+  mov si, command
+  mov di, komanda_stop
+  call compare_strings
+  cmp ax, 1
+  je .stop_timer
 
+  mov si, msg_badargs
+  jmp .end
+
+.start_timer:
+  mov si, msg_start
+  jmp .end
+
+.stop_timer:
+  mov si, msg_stop
+
+.end:
+  call print
+  ret
 
 segment .data
+command: db '      ',SEP
+time: db '        ',SEP
 
-init_text:      db 'Inicijalizacija...', 0
+msg_badargs: db 'ne valjhaju argumenti',SEP
+msg_start: db 'starting timer',SEP
+msg_stop: db 'stopping timer',SEP
+noargs: db 'noargs',SEP
 
-sati:   dw 15, 0
+komanda_start: db '-start',SEP
+komanda_stop: db '-stop',SEP
+
+%include "_video.asm"
+%include "_string.asm"
+%include "_args.asm"

@@ -16,7 +16,7 @@ ispis:
 	
 	mov byte [es:bx], al
 	inc bx
-	mov [es:bx], byte 02h
+	mov [es:bx], byte 05h
 	inc bx
 	
 	inc si
