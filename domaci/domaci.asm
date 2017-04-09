@@ -30,7 +30,7 @@ main:
   cmp ax, 1
   je .stop_timer
 
-  mov si, msg_badargs               ;nije prepoznata komanda, ospisujemo poruku 'losi argmenti'
+  mov si, msg_badargs               ;nije prepoznata komanda, ispisujemo poruku 'losi argmenti'
   jmp .end                          ;zavrsavamo program ako nismo prepoznali komandu
 
 .start_timer:
