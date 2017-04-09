@@ -2,7 +2,7 @@ segment .code
 ; --------------------------------------------
 ; Stampanje jednog karaktera
 ; ulaz si i di
-; izlaz ax=1 ako su isti
+; izlaz al=1 ako su isti, ah=1, ako je di veci od si
 ; --------------------------------------------
 compare_strings:
     pusha
@@ -30,13 +30,23 @@ compare_strings:
     jmp .equal
    
 .not_equal:
+  cmp ah, al
+  jg .greater
   popa
-  mov ax, 0
+  mov al, 0
+  mov ah, 0
+  jmp .exit
+
+.greater:
+  popa
+  mov al, 0
+  mov ah, 1
   jmp .exit
 
 .equal:
   popa
-  mov ax, 1
+  mov al, 1
+  mov ah, 1
 
 .exit:
   ret

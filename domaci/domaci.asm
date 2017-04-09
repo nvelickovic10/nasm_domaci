@@ -17,17 +17,19 @@ main:
   call cls                          ;obrisi ceo ekran
 
   call get_args                     ;parsiraj argumente komandne linije (izlaz su [command] i [time])
+  mov si, komanda_start
+  ;call print_char
 
   mov si, command                   ;provera da li je uneta komanda == -start
   mov di, komanda_start             ;ulazi za sompare string su di i si
   call compare_strings              ;compare_string (proveravamo sadrzaj command i komanda_start da li su jednaki)
-  cmp ax, 1                         ;compare_string u registru ax vraca vrednost 1 ako su jednaki stringovi
+  cmp al, 1                         ;compare_string u registru ax vraca vrednost 1 ako su jednaki stringovi
   je .start_timer
 
   mov si, command                   ;provera da li je uneta komanda == -stop
   mov di, komanda_stop
   call compare_strings
-  cmp ax, 1
+  cmp al, 1
   je .stop_timer
 
   mov si, msg_badargs               ;nije prepoznata komanda, ispisujemo poruku 'losi argmenti'
@@ -35,7 +37,7 @@ main:
 
 .start_timer:
   ;call start_tsr                   ;tsr verzija (under construction...)
-  ;call start_1c                    ;pokretanje promene vektora prekida za interapt 1C
+  call start_1c                    ;pokretanje promene vektora prekida za interapt 1C
   mov si, msg_start
   jmp .end
 
@@ -43,7 +45,8 @@ main:
   mov si, msg_stop
 
 .end:
-  ;mov si, komanda_start
+  mov si, easter_egg
+  call cls
   call print                        ;ispisati poslednju poruku
   ret                               ;kraj programa (svega)
 
@@ -55,6 +58,8 @@ segment .data
   komanda_stop: db '-stop',SEP                      ;ili -stop
   
   current_time: db 'HH:MM:SS',SEP                   ;get_time ucitava vrednost na ovu adresu
+
+  easter_egg: db 'mulT kill!!', SEP                   ;poruka za kraj
 
   msg_badargs: db 'ne valjaju argumenti',SEP        ;poruke koje ispisujemo na ekranu
   msg_start: db 'starting timer',SEP

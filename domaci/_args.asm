@@ -7,9 +7,15 @@ get_args:
     mov cx, 0080h                       ; Maksimalni broj izvrsavanja instrukcije sa prefiksom REPx, da ne bismo beskonacno citali
     mov di, 81h                         ; Pocetak komandne linije u PSP (program segment prefix). Ako smo pokrenuli program sa domaci.com -start 12:00:00
                                         ;                                                                      trenutno se nalazimo ovde ^
-    
-    mov al, SPA                         ; Stavljamo vrednost ' ' u al, al se koristi u scasb
-    repe scasb                          ; scasb uporedjuje vrednost u al sa vrednosti u di. repe ponavlja scasb sve dok su al i di isti.Trazimo prvo mesto koje nije prazno (ako smo slucajno ukucali vise spejsova nego sto treba (ex. domaci.com     -start 12:00:00))
+
+.loop:
+    mov ah, [di]
+    inc di
+    cmp ah, ENT
+    je .exit                            ; ako je enter nema parametara
+    cmp ah, SPA                         ; cekamo prvi koji nije space, ako smo slucajno previse spaceova ukucali ex. domaci.com     -start
+    jne .loop
+
     dec di                              ; Vracamo DI da pokazuje gde treba domaci.com -start 12:00:00
                                         ;                                            ^
 

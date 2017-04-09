@@ -12,7 +12,7 @@ timer_hen:
 	jnz .izlaz														;ako nije 0 iskuliramo poziv
 
 	mov ax, [brzina]											;ako je nula
-	mov [brojac], ax											;ponovo ga inicijalizujemo na 18
+	mov [brojac], ax											;ponovo ga inicijalizujemo na 18 (18*55ms=0.99s)
 
   call get_time													;potrazi trenutno vreme
 
@@ -25,11 +25,11 @@ timer_hen:
 
   mov [offset], word 160								;vratimo offset u video memoriji na prvobitnu vrednost
 
-  mov si, current_time
-  mov di, time
+  mov si, time
+  mov di, current_time
   call compare_strings									;da li je trenutno vreme i zadato vreme isto
 
-  cmp ax, 1
+  cmp ah, 1															;compare_strings ah=1 ako je di veci ili jednak od si
   jne .izlaz														;ako nije - nista...
 
   mov [offset], word 480								;pomerimo offset na 3. red  1 red = 160, 3 reda = 480

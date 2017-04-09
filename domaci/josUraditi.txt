@@ -1,0 +1,4 @@
+-provera da li je vreme uneto u formatu HH:MM:SS
+-prekidanje alarma kada istekne vreme
+-produzetak za minut
+-dodavanje minuta na vreme
