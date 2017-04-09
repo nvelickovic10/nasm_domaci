@@ -1,4 +1,5 @@
 ; =====================================================
+; NE RADI, OVO JE SAMO PRIMER SA VEZBE
 ;    - Primer sa vezbi vezba 4 (Under construction....)
 ;    - Instalira TSR rutinu
 ; ===================================================== 

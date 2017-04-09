@@ -13,9 +13,9 @@ _novi_1C:
 	xor ax, ax
 	mov es, ax
 	mov bx, [es:1Ch*4]
-	mov [old_int_off], bx 
+	mov [old_int_off_time], bx 
 	mov bx, [es:1Ch*4+2]
-	mov [old_int_seg], bx
+	mov [old_int_seg_time], bx
 
 ; Modifikacija u tabeli vektora prekida tako da pokazuje na nasu rutinu
 	mov dx, timer_hen
@@ -32,9 +32,9 @@ _stari_1C:
 	cli
 	xor ax, ax
 	mov es, ax
-	mov ax, [old_int_seg]
+	mov ax, [old_int_seg_time]
 	mov [es:1Ch*4+2], ax
-	mov dx, [old_int_off]
+	mov dx, [old_int_off_time]
 	mov [es:1Ch*4], dx
 	sti
 	ret
@@ -45,9 +45,9 @@ _novi_09:
 	xor ax, ax
 	mov es, ax
 	mov bx, [es:09h*4]
-	mov [old_int_off], bx 
+	mov [old_int_off_tast], bx 
 	mov bx, [es:09h*4+2]
-	mov [old_int_seg], bx
+	mov [old_int_seg_tast], bx
 
 ; Modifikacija u tabeli vektora prekida tako da pokazuje na nasu rutinu
 	mov dx, tast_hen
@@ -63,14 +63,17 @@ _stari_09:
 	cli
 	xor ax, ax
 	mov es, ax
-	mov ax, [old_int_seg]
+	mov ax, [old_int_seg_tast]
 	mov [es:09h*4+2], ax
-	mov dx, [old_int_off]
+	mov dx, [old_int_off_tast]
 	mov [es:09h*4], dx
 	sti
 	ret
 
 segment .data
 
-old_int_seg: dw 0
-old_int_off: dw 0
+old_int_seg_time: dw 0
+old_int_off_time: dw 0
+
+old_int_seg_tast: dw 0
+old_int_off_tast: dw 0

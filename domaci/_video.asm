@@ -27,10 +27,10 @@ print:
 	jmp .petlja															;petljamo do terminatora
 	
 .kraj:
-	mov byte [es:bx], '|'                    ; ispisujemo pajp na kraju cisto zbog debagovanja, da bismo znali gde je kraj stringa
-	inc bx
-	mov ah, [boja]
-	mov byte [es:bx], ah                   ; upisujemo trenutnu boju (uglavnom crna pozadina sa belim slovima, osim slova koja trepere)
+	;mov byte [es:bx], '|'                    ; ispisujemo pajp na kraju cisto zbog debagovanja, da bismo znali gde je kraj stringa
+	;inc bx
+	;mov ah, [boja]
+	;mov byte [es:bx], ah                   ; upisujemo trenutnu boju (uglavnom crna pozadina sa belim slovima, osim slova koja trepere)
 
 	popa													;vracanje starih rgistara
 	ret 
@@ -79,6 +79,7 @@ cls:
 	ret        
 
 segment .data
+boja_koja_treperi: db 08Fh						;pronadjena sistemom uzaludnih pokusaja
 boja: db 0Fh													;varijabla za boju (video memorija ima 2000 karaktera a 4000 bajtova, karakter na ekranu opisuju 2 bajta prvi je karakter, a drugi je boja)
 																			;boju karakterisu 2 hex cifre, prva je pozadina, a druga boja slova. 0Fh je crna pozadina, bela slova
 prazno: db ' ',SEP										;prazan karakter koji koristi cls

@@ -9,8 +9,8 @@ get_args:
                                         ;                                                                      trenutno se nalazimo ovde ^
 
 .loop:
-    mov ah, [di]
-    inc di
+    mov ah, [di]                        ;uzimamo trenutnu vrednost
+    inc di                              ;prelazimo na sledeci karakter u PSP
     cmp ah, ENT
     je .exit                            ; ako je enter nema parametara
     cmp ah, SPA                         ; cekamo prvi koji nije space, ako smo slucajno previse spaceova ukucali ex. domaci.com     -start
@@ -43,13 +43,15 @@ get_args:
     
     mov al, ENT                         ;cekamo enter za kraj komande
 
+    cmp ah, ENT                             ;provera da li je trenutni karakter enter, ako smo slucajno ukucali samo domaci.com -start
+    je .done_time  
 
 ;sve isto kao kod .read_command samo sto sada citamo zadato vreme
 ;domaci.com -start 12:00:00
 ;trenutno smo ovde ^
-.read_time:
+.read_time:                             ;slicno kao read command samo vrednost stavlja u time
     inc di
-    mov ah, [di]                    
+    mov ah, [di]                
     mov [time+bx], ah
     inc bx
     cmp ah, al
