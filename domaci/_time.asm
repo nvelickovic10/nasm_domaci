@@ -70,3 +70,112 @@ get_time:
 
   popa                      ;vracamo stare registre
   ret
+
+; --------------------------------------------
+; dodavanje jednog minuta na zadato vreme
+; izlaz time
+; --------------------------------------------
+add_1_minute:
+  pusha
+                                  ;vreme je u formatu HH:MM:SS
+  mov bx, 4                       ;postavljamo pokazivac na ^ bx=4, jer nju zelimo da inkrementiramo
+
+  inc bx
+.loop9:                           ;prvo proveravamo do 9 za owerflow
+  dec bx
+  mov al, [time+bx]               ;uzimamo vrednost na trenutnoj poziciji
+  cmp al, byte ':'                ;da li je vrednost ':'?
+  je .loop9                       ;ako jeste samo preskacemo
+  inc al                        ;uvecamo vrednost za 1
+  mov [time+bx], al             ;postavimo inkrementovanu vrednost
+  cmp al, '9'                     ;da li je vece od '9'
+  jng .end                        ;ako nije vece od '9' nema carry-ja i izlazimo iz funkcije
+  mov [time+bx], byte '0'         ;prenosimo owerflow (ex. bilo je 39 minuta i dodajemo 1, znaci bice 40)
+  cmp bx, 0                       ;ako smo dosli do poslednje cifre izlazimo iz petlje (nema owerflow za sate, samo padne na 00:00:00)
+  je .end
+  jmp .loop6
+
+.loop6:                           ;pa do 6 za owerflow
+  dec bx
+  mov al, [time+bx]               ;uzimamo vrednost na trenutnoj poziciji
+  cmp al, byte ':'                ; da li je vrednost ':'?
+  je .loop6
+  inc al                        ;uvecamo vrednost za 1
+  mov [time+bx], al             ;postavimo inkrementovanu vrednost
+  cmp al, '5'                     ;da li je vece od '5'
+  jng .end                        ;ako nije vece od '5' nema carry-ja i izlazimo iz funkcije
+  mov [time+bx], byte '0'         ;prenosimo owerflow (ex. bilo je 59 minuta i dodajemo 1, znaci bice 00)
+  cmp bx, 0
+  je .end
+  jmp .loop9
+
+.end:
+  popa
+  ret
+
+; --------------------------------------------
+; provera formata vremean
+; ulaz ah gornja granica 0-ah, al cifra koja se proverava
+; izlaz ah = 1 ako je validna cifra
+; --------------------------------------------
+check_digit:
+  pusha
+  cmp al, '0'
+  jnge .invalid             ;ako nije veci ili jednak '0' nije validan
+  cmp al, ah
+  jnle .invalid 
+
+  popa
+  mov ah, 1                 ;ako je validna 0-ah vracamo rezultat ah=1
+  ret
+  
+.invalid:
+  popa
+  mov ah, 0
+  ret
+
+
+; --------------------------------------------
+; provera formata vremean
+; ulaz time sa komandne linije
+; izlaz al = 1 ako je validan
+; --------------------------------------------
+check_time_format:
+  pusha
+
+  xor bx, bx                ;inicijalizacija brojaca bx=0
+.loop:
+  mov al, [time+bx]         ;uzimamo trenutnu vrednost
+  mov ah, '6'                 ;priprema za check digit (prvo proveravamo da li je cifra 0-6)
+  call check_digit
+  cmp ah, 0               ;rezultat check_digit je u ah, ako je nula nije validna
+  je .invalid             ;ako nije 0-6 nije validan
+  
+  inc bx                    ;sledeca cifra
+  mov al, [time+bx]         ;uzimamo trenutnu vrednost
+  mov ah, '9'                 ;priprema za check digit (da li je cifra 0-9)
+  call check_digit
+  cmp ah, 0
+  je .invalid             ;ako nije 0-9 nije validan
+
+  cmp bx, 7                 ;ako smo stigli do kraja stringa (druge sekunde u time) onda izlazimo iz petlje
+  je .valid
+  
+  inc bx                    ;sposle dve cifre ide ':'
+  mov al, [time+bx]         ;uzimamo trenutnu vrednost
+  cmp al, ':'
+  jne .invalid              ;ako nije ':' posle dve cifre nije validan
+
+  inc bx
+  jmp .loop
+
+
+.valid:
+  popa
+  mov al, 1
+  ret
+
+.invalid:
+  popa
+  mov al, 0
+  ret

@@ -5,6 +5,7 @@
 ;==================================================
 
 ESC equ 1bh                                 ; ASCII kod za Esc taster
+AKY equ 61h                                 ; ASCII kod za Esc taster
 ENT equ 0dh                                 ; ASCII kod za Ent taster
 SEP equ 25h                                 ; ASCII kod za $ (terminator)
 SPA equ 20h                                 ; ASCII kod za Space taster
@@ -17,8 +18,6 @@ main:
   call cls                          ;obrisi ceo ekran
 
   call get_args                     ;parsiraj argumente komandne linije (izlaz su [command] i [time])
-  mov si, komanda_start
-  ;call print_char
 
   mov si, command                   ;provera da li je uneta komanda == -start
   mov di, komanda_start             ;ulazi za sompare string su di i si
@@ -32,25 +31,30 @@ main:
   cmp al, 1
   je .stop_timer
 
+.badargs:
   mov si, msg_badargs               ;nije prepoznata komanda, ispisujemo poruku 'losi argmenti'
   jmp .end                          ;zavrsavamo program ako nismo prepoznali komandu
 
 .start_timer:
-  ;call start_tsr                   ;tsr verzija (under construction...)
-  call start_1c                    ;pokretanje promene vektora prekida za interapt 1C
-  mov si, msg_start
+  call check_time_format            ;provera da li je vreme uneto u dobrom formatu HH:MM:SS
+  cmp al, 1
+  jne .badargs                      ;ako nije ispisi poruku
+
+  ;call start_tsr                   ;tsr verzija (under construction...) NE RADI
+  call start_interupts              ;pokretanje promene vektora prekida za interapt 1C
+  mov si, easter_egg
   jmp .end
 
 .stop_timer:
-  mov si, msg_stop
+  mov si, msg_stop                  ;lol ovo bi imalo smisla sa tsr
 
 .end:
-  mov si, easter_egg
   call cls
   call print                        ;ispisati poslednju poruku
   ret                               ;kraj programa (svega)
 
 segment .data
+  empty: db '                                    ',SEP
   command: db '      ',SEP                          ;get_args ucitava vrednost na ovu adresu
   time: db 'HH:MM:SS',SEP                           ;get_args ucitava vrednost na ovu adresu
 
@@ -64,7 +68,8 @@ segment .data
   msg_badargs: db 'ne valjaju argumenti',SEP        ;poruke koje ispisujemo na ekranu
   msg_start: db 'starting timer',SEP
   msg_stop: db 'stopping timer',SEP
-  timer_stop: db 'STOP',SEP
+  timer_stop: db 'BANG!',SEP
+  msg_snooze: db 'SNOOZE (F1)',SEP
 
                                                     ;ukljucivanje ostalih modula
 %include "_time.asm"                                ;dobijanje trenutnog vremena
