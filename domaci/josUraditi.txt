@@ -1,6 +1,0 @@
-resiti problem sa esc kada izadje iz programa
-	push word [cs:old_int_seg_tast]
-	push word [cs:old_int_off_tast]
-
-objasniti prekide.asm
-objasniti string.asm
