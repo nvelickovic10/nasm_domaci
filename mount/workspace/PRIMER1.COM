@@ -1,1 +1,0 @@
-´	ºÍ!ÃMoj prvi program.$
