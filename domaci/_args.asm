@@ -43,13 +43,15 @@ get_args:
     
     mov al, ENT                         ;cekamo enter za kraj komande
 
+    cmp ah, ENT                             ;provera da li je trenutni karakter enter, ako smo slucajno ukucali samo domaci.com -start
+    je .done_time  
 
 ;sve isto kao kod .read_command samo sto sada citamo zadato vreme
 ;domaci.com -start 12:00:00
 ;trenutno smo ovde ^
 .read_time:
     inc di
-    mov ah, [di]                    
+    mov ah, [di]                
     mov [time+bx], ah
     inc bx
     cmp ah, al
