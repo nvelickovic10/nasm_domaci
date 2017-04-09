@@ -64,6 +64,7 @@ timer_hen:
 	mov [offset], word 160
 
 	cmp [snooze_count_char], byte ':'  					;cekamo dok ne bude : 'lazna desetka' (asci vrednost '10' je ':')
+
 	jne .izlaz
 
 	mov [exit_state], byte 1
@@ -118,6 +119,7 @@ segment .data
 
 snooze_count_char: db '0'								;brojac do 10 sekundi u snooze_state, stavili smo ga da bude '0' da bismo ga lakse ispisali
 brojac:	dw 0														;brojac kojim proveravamo da li nas hendler treba da opali
+
 ;interapt 1C ce se desiti svakih 55ms, mi smo nas hendler postavili na interapt 1C, ali hocemo da opali na 1 sekundu
 ;postavljamo vrednost [brojac] na vrednost [brzina] zadatu u _1c.asm 18*55=0.99 sec (close enough)
 ;1C opali mi proverimo da li je brojac == 0
