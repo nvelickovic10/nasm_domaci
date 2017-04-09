@@ -1,0 +1,38 @@
+kompajliranje: nasm domaci.asm -f bin -o domaci.com
+
+pokretanje: domaci.com -start HH:MM:SS
+
+sta radi:
+  radi parsiranje komandnih argumenata
+    ako se ukucaju nevalidni argumenti ispisace se poruka
+      probaj da ukucas domaci.com -start
+      ili domaci.com -start 23:61:33
+      ili domaci.com -ddd
+  inkrementacija vremena za 1 minut pazi da li ima owerflowa
+    odnosno ako je vreme 22:59:00 i mi povecamo za 1 min necemo dobiti 22:60:00 nego 23:00:00
+  radi postavljanje 2 custom interapt handlera
+    1Ch (user timer interapt) koji se poziva na svakih 55 ms
+      u njemu preskacemo 18 poziva kako bi se pozvao nas handler na 1 sec (18*55ms=0.99)
+      on ispise trenutno vreme i zadato vreme i proverava da li je isteklo vreme
+      ako je isteklo ulazi se u snooze_state koje traje 10 sec i u kom se alarm moze produziti za 1 min
+      kada istekne 10 sekundi ulazi se u exit_state program se prekida
+    09h (keyboard interapt) koji se poziva na svaki keystroke
+      u njemu proveravamo da li je pritisnut esc ili F1
+      ako je pritisnut F1 proverava se da li smo u snooze_state, ako jesmo zadato vreme se inkrementira za 1 min
+      ako je pritisnut esc ulazi se u exit_state i program se prekida
+
+sta ne radi:
+  ne radi postavljanje TSR rutine (Terminate and Stay Resident)
+    ta rutina omogucava da program prividno prekine izvrsavanje, odnosno da nastavi da se izvrsava ali da se u terminalu moze pozvati drugi program
+    primeti kako trenutno dok se izvrsava nas program ne mozes pokrenuti novi dok se ne prekine izvrsavanje
+  nije resen problem reentrancy sto u nasem slucaju i nema smisla resavati jer je za to potreban TSR  
+    reentrancy je problem kada je pokrenuta TSR rutina
+    ukratko iz TSR rutine se ne mogu pozivati drugi sistemski pozivi (kao sto je get_current_time) u bilo kom trenutku
+    to se moze resiti proverom i postavljanjem nekih flegova sto jako komplikuje program
+    https://courses.engr.illinois.edu/ece390/books/artofasm/CH18/CH18-3.html
+  takodje TSR bi doveo do mnogih drugih problema kao sto su:
+    problem resident memorije https://courses.engr.illinois.edu/ece390/books/artofasm/CH18/CH18-1.html#HEADING1-3
+    problem ponovnog pokretanja programa, ako se pokrene TSR rutina sta raditi ako se ona ponovo pokrene  
+      to moze dovesti do dvostrukog izvrsavanja koda ili do blokirnja sistema
+        https://courses.engr.illinois.edu/ece390/books/artofasm/CH18/CH18-3.html#HEADING3-34
+    problem iskljucivanja programa, tada bi bila korisna komanda domaci.com -stop, ovako ne

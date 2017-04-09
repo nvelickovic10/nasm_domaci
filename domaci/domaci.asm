@@ -68,7 +68,7 @@ segment .data
   msg_badargs: db 'ne valjaju argumenti',SEP        ;poruke koje ispisujemo na ekranu
   msg_start: db 'starting timer',SEP
   msg_stop: db 'stopping timer',SEP
-  timer_stop: db 'BANG!',SEP
+  timer_stop: db 'BANG!!!',SEP
   msg_snooze: db 'SNOOZE (F1)',SEP
 
                                                     ;ukljucivanje ostalih modula

@@ -146,7 +146,7 @@ check_time_format:
   xor bx, bx                ;inicijalizacija brojaca bx=0
 .loop:
   mov al, [time+bx]         ;uzimamo trenutnu vrednost
-  mov ah, '6'                 ;priprema za check digit (prvo proveravamo da li je cifra 0-6)
+  mov ah, '5'                 ;priprema za check digit (prvo proveravamo da li je cifra 0-6)
   call check_digit
   cmp ah, 0               ;rezultat check_digit je u ah, ako je nula nije validna
   je .invalid             ;ako nije 0-6 nije validan
