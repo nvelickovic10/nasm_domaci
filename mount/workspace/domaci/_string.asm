@@ -5,18 +5,29 @@ segment .code
 ; izlaz ax=1 ako su isti
 ; --------------------------------------------
 compare_strings:
-  pusha
-  mov ax, si
-  call string_length
-  mov bx, ax
-  mov ax, di
-  call string_length
-  cmp bx, ax
-  jne .not_equal
-  mov cx, bx
+    pusha
+    mov ax, si
+    call string_length
+    mov bx, ax
+    mov ax, di
+    call string_length
+    cmp bx, ax
+    jne .not_equal
+    mov cx, bx
+    inc cx
 
-  repe cmpsb      ;compare (ja mislim si i di bajt po bajt)
-  jecxz .equal  ;jumps if cx = 0
+.loop:
+    mov ah, [di]
+    mov al, [si]
+    cmp ah, al
+    jne .not_equal
+    dec cx
+    inc di
+    inc si
+    cmp cx, 0
+    jne .loop
+
+    jmp .equal
    
 .not_equal:
   popa
