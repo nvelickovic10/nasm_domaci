@@ -1,0 +1,37 @@
+kojim redom sam pisao:
+  prvi fajl koji sam napravio je domaci.asm
+  prvo sam pisao ispis na video memoriji (video.asm)
+    brisanje celog ekrana (uzeto sa vezbe)
+    ispis jedne linije so terminatora (SEP '$') (uzeto sa vezbe i modifikovano)
+    ispis jednog karaktera
+  pa sam pisao obradu stringova (string.asm)
+    da li su jednaki stringovi (uzeto sa vezbe i modifikovano)
+    duzina stringa  (uzeto sa vezbe i modifikovano)
+  pa sam napisao parsiranje komandne linije (args.asm)
+    citanje dva parametra komanda i zadato vreme
+  pa sam napisao proveru argumenata (uzeto sa vezbe i modifikovano)
+    ako je uneto -start onda mora i vreme da se unese
+    ako je uneto -stop onda ne mora vreme
+    ako ne prepozna komandu ili nije validno vreme ispisuje se greska i izlazi se iz programa 
+  onda sam napisao zamenu u tabeli vektora prekida
+    ovo je u 3 fajla:
+      1c.asm
+        iz njega se pokrece zamena u tabeli vektora prekida
+        on poziva novi_1c i stari_1c (i novi_09 i stari_09) kada je to potrebno
+      prekidi.asm
+        ovde su definisane funkcije novi_1c i stari_1c (i novi_09 i stari_09)
+        ovde se vrsi zamena vektora prekidau
+        ubacuju se nase funkcije za obradu prekida
+      hend.asm
+        ovde su definisane nase funkcije za obradu prekida (hendleri interapta)
+  posle toga sam poceo da pravim alarm
+    povezao sam prekide sa argumentima na komandnoj liniji
+    napravio funkciju za dobijanje trenutnog vremena time.asm
+  ovde sam shvatio da ne mogu da stignem da uradim za 10 pokrenuta
+  pa sam malo ulepsao kod i napravio da radi ovo sto imam...
+
+  _tsr.asm se ne koristi, ali on je u principu samo glupavi primer sa vezbe, da sam nastavio dalje da radim u njemu bih pisao najvise komanda
+    kod za poziv tsr rutine
+    kod za proveru da li je rutina vec postavljena
+    kod za brisanje rutine
+    ...

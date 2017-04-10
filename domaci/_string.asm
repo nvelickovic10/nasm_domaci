@@ -13,21 +13,23 @@ compare_strings:
     call string_length
     cmp bx, ax
     jne .not_equal
-    mov cx, bx
-    inc cx
 
+    mov cx, bx          ;u cx stavimo duzinu stringa
+    inc cx      
+
+;proveravamo stringove karakter po karakter da vidimo da li su isti
 .loop:
-    mov ah, [di]
-    mov al, [si]
-    cmp ah, al
-    jne .not_equal
-    dec cx
-    inc di
-    inc si
-    cmp cx, 0
-    jne .loop
+    mov ah, [di]        ;uzimamo karakter iz di
+    mov al, [si]        ;uzimamo karakter iz si
+    cmp ah, al          ;uporedjujemo ih
+    jne .not_equal      ;ako nisu isti string nije jednak
+    dec cx              ;decrementujemo brojac za duzinu stringa  
+    inc di              ;sledeci karakter u di
+    inc si              ;sledeci karakter u si
+    cmp cx, 0           ;da li je cx=0?
+    jne .loop           ;ako nije jos nismo na kraju stringa
 
-    jmp .equal
+    jmp .equal          ;ako jeste dosli smo do kraja stringa, svi karakteri su isti, znaci stringovi su isti
    
 .not_equal:
   cmp ah, al
